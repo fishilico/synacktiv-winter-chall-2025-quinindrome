@@ -1,0 +1,6 @@
+version = 1
+
+[[annotations]]
+path = ["**/*.bin"]
+SPDX-FileCopyrightText = "2026 Nicolas Iooss"
+SPDX-License-Identifier = "MIT"
