@@ -441,7 +441,7 @@ b2 60       mov $0x60, %dl        ; edx = 96 (file size)
 86 dd       xchg %bl, %ch         ; ebx = 1, ecx = 0x20000000
 cd 80       int $0x80             ; write(1, 0x20000000, 96)
 58          pop %eax              ; eax = 1
-eb f9       jmp . - 7             ; jump to "xchg %bl, %ch"
+eb f9       jmp . - 5             ; jump to "xchg %bl, %ch"
             ; xchg %bl, %ch       ; ebx = 0
             ; int $0x80           ; exit(0)
 ```
