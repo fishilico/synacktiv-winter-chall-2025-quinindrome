@@ -9,7 +9,7 @@
 from __future__ import annotations
 
 
-class ImprossibleConstraintError(Exception):
+class ImpossibleConstraintError(Exception):
     """Error raised when constraints become impossible to solve"""
 
     def __init__(self, offset: int, message: str) -> None:
@@ -190,7 +190,7 @@ class Quinindrome:
             # Entrypoint needs to be above the first NULL page: e_entry >= 0x1000
             e_entry_b1_values = self.get_u8_values(0x19)
             if e_entry_b1_values is not None and all(val < 0x10 for val in e_entry_b1_values):
-                raise ImprossibleConstraintError(
+                raise ImpossibleConstraintError(
                     0x18,
                     f"ELF entrypoint is forced to be in NULL page: {[hex(v) for v in sorted(e_entry_b1_values)]}",
                 )
@@ -201,7 +201,7 @@ class Quinindrome:
                 if (entry_op1 := self.get_known_u8(entry_offset + 1)) is not None:
                     entry_op = bytes((entry_op0, entry_op1))
                     if entry_op == b"\x01\x00":  # add %eax,(%eax)
-                        raise ImprossibleConstraintError(
+                        raise ImpossibleConstraintError(
                             entry_offset,
                             f"ELF entrypoint {entry_offset:#x} targets faulting instruction",
                         )
@@ -221,7 +221,7 @@ class Quinindrome:
         if (existing_values := self.possible_bytes[boff]) is not None:
             new_values = existing_values & values
             if not new_values:
-                raise ImprossibleConstraintError(
+                raise ImpossibleConstraintError(
                     offset,
                     f"values {values!r} from {source} not compatible with existing {existing_values!r} from {self.byte_descs[offset]!r}",
                 )
@@ -377,12 +377,12 @@ def do_search() -> None:
         for phdr_offset in range(0, file_size - 0x20 + 1):
             try:
                 q = Quinindrome(file_size, phdr_offset)
-            except ImprossibleConstraintError as e:  # noqa: F841
+            except ImpossibleConstraintError as e:  # noqa: F841
                 # print(f"Q({file_size:#x}.{phdr_offset:02x}) impossible at offset {e.offset:#x}: {e.message}")
                 continue
             try:
                 q.validate_elf_headers()
-            except ImprossibleConstraintError as e:
+            except ImpossibleConstraintError as e:
                 print(f"Q({file_size:#x}.{phdr_offset:02x}) impossible at offset {e.offset:#x}: {e.message}")
                 continue
 
